@@ -86,20 +86,35 @@
 	else {
 		locationCircleLayerGroup.clearLayers();
 	}
-	$: if (coords && followLocation) {
-		map.fitBounds(
-			L.latLng(coords.latitude, coords.longitude).toBounds(coords.accuracy * 2), 
-			{
-				animate: true, 
-				duration: 1,
-			},
-		);
-	} else if (map) {
-		map.setZoom(1, {
-			animate: true,
-			duration: 5,
-		});
-	}
+
+	const locationFollowLogic = {
+		follow: false,
+		coords: void 0,
+		setFollow: function(shouldFollow: boolean) {
+			if (this.follow && !shouldFollow) {
+				map.setZoom(1, {
+					animate: true,
+					duration: 5,
+				});
+			}
+			this.follow = shouldFollow;
+		},
+		update: function(coords: GeolocationCoordinates) {
+			this.coords = coords;
+			if (this.coords && this.follow) {
+				map.fitBounds(
+					L.latLng(this.coords.latitude, this.coords.longitude).toBounds(this.coords.accuracy * 2), 
+					{
+						animate: true, 
+						duration: 1,
+					},
+				);
+			}
+		},
+	};
+
+	$: locationFollowLogic.setFollow(followLocation);
+	$: locationFollowLogic.update(coords);
 
 	function onPosition(e: GeolocationPosition) {
 		error = void 0;
@@ -166,7 +181,7 @@
 	{/if}
 	<div id="button-area">
 		{#key geoWatchHandle}
-			<button on:click={onLocationButtonClick}>{geoWatchHandle ? "Stop Watching" : "Find Location"}</button>
+			<button on:click={onLocationButtonClick}>{geoWatchHandle !== (void 0) ? "Stop Watching" : "Find Location"}</button>
 		{/key}
 		{#key followLocation}
 			<button on:click={toggleFollowLocation}>{followLocation ? "Stop Zooming to Location" : "Zoom to Location"}</button>
