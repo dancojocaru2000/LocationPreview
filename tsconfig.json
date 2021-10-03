@@ -4,6 +4,8 @@
   "include": ["src/**/*"],
   "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
   "compilerOptions": {
+    "jsx": "react",
+    "jsxFactory": "DOMCreateElement",
     "sourceMap": true
   }
 }

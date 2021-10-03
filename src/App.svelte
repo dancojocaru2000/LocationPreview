@@ -9,7 +9,7 @@
 
 	let darkMode = false;
 	let map: L.Map | undefined = void 0;
-	const mapLayers = {
+	const mapLayers = () => ({
 		dark: L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
 			attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
 			maxZoom: 18,
@@ -26,7 +26,7 @@
 			zoomOffset: -1,
 			accessToken: MAPBOX_ACCESS_TOKEN,
 		}),
-	};
+	});
 	const locationCircleLayerGroup = L.layerGroup();
 	$: if (map) {
 		locationCircleLayerGroup.addTo(map);
@@ -63,10 +63,10 @@
 	$: {
 		if (map) {
 			if (!darkMode) {
-				mapLayers.light.addTo(map);
+				mapLayers().light.addTo(map);
 			}
 			else {
-				mapLayers.dark.addTo(map);
+				mapLayers().dark.addTo(map);
 			}
 		}
 	}
