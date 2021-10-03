@@ -91,24 +91,26 @@
 		follow: false,
 		coords: void 0,
 		setFollow: function(shouldFollow: boolean) {
-			if (this.follow && !shouldFollow) {
-				map.setZoom(1, {
-					animate: true,
-					duration: 5,
-				});
-			}
 			this.follow = shouldFollow;
 		},
-		update: function(coords: GeolocationCoordinates) {
+		update: function(coords: GeolocationCoordinates | undefined) {
 			this.coords = coords;
-			if (this.coords && this.follow) {
-				map.fitBounds(
-					L.latLng(this.coords.latitude, this.coords.longitude).toBounds(this.coords.accuracy * 2), 
-					{
-						animate: true, 
-						duration: 1,
-					},
-				);
+			if (map && this.follow) {
+				if (this.coords) {
+					map.fitBounds(
+						L.latLng(this.coords.latitude, this.coords.longitude).toBounds(this.coords.accuracy * 2), 
+						{
+							animate: true, 
+							duration: 1,
+						},
+					);
+				}
+				else {
+					map.setZoom(1, {
+						animate: true,
+						duration: 5,
+					});
+				}
 			}
 		},
 	};
